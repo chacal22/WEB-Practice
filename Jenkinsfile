@@ -65,7 +65,7 @@
           stage('Check application') {
               steps {
                   echo 'Testing the web app...'
-                  sh 'wget -qO- --timeout=10 http://jenkins-master:9000 > /dev/null'
+                  sh 'wget -qO- --timeout=10 http://130.0.120.3:9000 > /dev/null'
               }
           }
       }
