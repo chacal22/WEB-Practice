@@ -14,9 +14,9 @@ pipeline {
             steps{
                 echo "The responsible of this project is ${AUTHOR} and and will be deployed in ${ENVIRONMENT}"
                 //Fisrt, drop the directory if exists
-                sh 'rm -rf /home/mcherlo/docker/jenkins/web'
+                sh 'rm -rf /opt/web'
                 //Create the directory
-                sh 'mkdir /home/mcherlo/docker/jenkins/web'
+                sh 'mkdir /opt/web'
                 
             }
         }
@@ -35,7 +35,7 @@ pipeline {
         stage('Copy the web application to the container directory') {
             steps {
                 echo 'Copying web application...'             
-                sh 'cp -r web/* /home/mcherlo/docker/jenkins/web'
+                sh 'cp -r web/* /opt/web'
             }
         }
         stage('Checking the app') {
