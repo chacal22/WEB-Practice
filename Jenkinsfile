@@ -2,7 +2,8 @@
       agent any
 
       environment {
-          WEB_ROOT = '/home/mcherlo/docker/jenkins/web'
+          WEB_ROOT = '/opt/web'
+          HOST_WEB_ROOT = '/home/mcherlo/docker/jenkins/web'
           CONTAINER_NAME = 'apache1'
       }
 
@@ -27,25 +28,37 @@
               }
           }
 
-          stage('Prepare web directory') {
+          stage('Prepare mounted web directory') {
               steps {
-                  echo 'Preparing web root directory...'
+                  echo 'Preparing mounted web root directory...'
                   sh 'mkdir -p ${WEB_ROOT}'
                   sh 'find ${WEB_ROOT} -mindepth 1 -maxdepth 1 -exec rm -rf {} +'
+              }
+          }
+
+          stage('Debug paths') {
+              steps {
+                  echo 'Checking workspace and mounted paths...'
+                  sh 'pwd'
+                  sh 'ls -la'
+                  sh 'ls -la web || true'
+                  sh 'ls -la ${WEB_ROOT} || true'
               }
           }
 
           stage('Copy web application') {
               steps {
                   echo 'Copying web application...'
-                  sh 'cp -r web/. ${WEB_ROOT}/'
+                  sh 'test -d web'
+                  sh 'cp -a web/. ${WEB_ROOT}/'
+                  sh 'ls -la ${WEB_ROOT}'
               }
           }
 
           stage('Create Apache httpd container') {
               steps {
                   echo 'Creating the container...'
-                  sh 'docker run -dit --name ${CONTAINER_NAME} -p 9000:80 -v ${WEB_ROOT}:/usr/local/apache2/htdocs/ httpd'
+                  sh 'docker run -dit --name ${CONTAINER_NAME} -p 9000:80 -v ${HOST_WEB_ROOT}:/usr/local/apache2/htdocs/ httpd'
               }
           }
 
